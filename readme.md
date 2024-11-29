@@ -65,7 +65,8 @@ modules: [
 ];
 ```
 
-and alternative approach, is to define a fixed MMM-pages config
+an 
+alternative approach, is to define a fixed MMM-pages config
 
 ```js
 modules: [
