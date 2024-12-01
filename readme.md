@@ -1,5 +1,21 @@
 # MMM-pages
 
+## Project status
+
+This project is **mature** and in maintence mode only. New features or fixes
+will not be actively made. If you'd like to see a feature or fix, please
+create a pull request.
+
+This repo is **not** abandoned. I will still respond to PRs, but support
+requests or bugs reports will not be monitored.
+
+If you'd like to be a maintainer to drive new features forward, please
+contribute to this repository before asking for maintainership. As this module
+is used by a lot of people, I need to ensure that a new maintainer can write
+high quality code and match the standards of the existing codebase.
+
+## Description
+
 This [MagicMirror²][mm] module allows you to have pages in your MagicMirror!
 Want to have more modules in your MagicMirror, but want to keep the format?
 Or, want to have grouped modules that are themed together? Look no further!
@@ -14,7 +30,7 @@ To display what page you're on, check out the [page indicator module][page indic
 
 ## Installation
 
-In your terminal, go to your MagicMirror's module folder:
+In your terminal, go to your MagicMirror's module directory:
 
 ```bash
 cd ~/MagicMirror/modules
@@ -23,12 +39,12 @@ cd ~/MagicMirror/modules
 Clone this repository:
 
 ```bash
-git clone https://github.com/sdetweil/MMM-pages
+git clone https://github.com/edward-shen/MMM-pages
 ```
 
 ## Update
 
-Go to the module’s folder inside your MagicMirror's module folder and pull the latest version:
+Go to the module’s directory inside your MagicMirror's module directory and pull the latest version:
 
 ```bash
 cd ~/MagicMirror/modules/MMM-pages
@@ -47,45 +63,40 @@ Because the modulename is used, this approach does not support multiple instance
 on different pages (like your calendar on page 1, and someone elses on page 2).
 
 ```js
-modules: [
-  {
-    module: "MMM-pages",
-    config: {
-      modules: [
-        ["newsfeed"],
-        ["calendar", "compliments"]
-      ],
-      fixed: ["clock", "weather", "MMM-page-indicator"],
-      hiddenPages: {
-        "screenSaver": ["clock", "MMM-SomeBackgroundImageModule"],
-        "admin": ["MMM-ShowMeSystemStatsModule", "MMM-AnOnScreenMenuModule"]
-      }
-    }
-  },
-];
+    {
+        module: "MMM-pages",
+        config: {
+            modules: [
+                ["newsfeed"],
+                ["calendar", "compliments"]
+            ],
+            fixed: ["clock", "weather", "MMM-page-indicator"],
+            hiddenPages: {
+                "screenSaver": ["clock", "MMM-SomeBackgroundImageModule"],
+                "admin": ["MMM-ShowMeSystemStatsModule", "MMM-AnOnScreenMenuModule"]
+            }
+        }
+    },
 ```
 
-an 
-alternative approach, is to define a fixed MMM-pages config
+an alternative approach, is to define a fixed MMM-pages config
 
 ```js
-modules: [
-  {
-    module: "MMM-pages",
-    config: {
-      modules: [
-        ["page1"],
-        ["page2"],
-        ["page3"]
-      ],
-      fixed: ["fixed_page"],
-      hiddenPages: {
-        "screenSaver": ["screensaver_page"],
-        "admin": ["admin_page"]
-      }
-    }
-  },
-];
+    {
+        module: "MMM-pages",
+        config: {
+            modules: [
+              ["page1"],
+              ["page2"],
+              ["page3"]
+            ],
+            fixed: ["fixed_page"],
+            hiddenPages: {
+              "screenSaver": ["screensaver_page"],
+              "admin": ["admin_page"]
+            }
+        }
+    },
 ```
 
 and then at each module, add a classes: property to indicate the page(s) this module is supposed to appear on
@@ -196,8 +207,7 @@ MMM-pages notifications.
 
 ### Initialization
 
-*This section provides documentation on what notifications the module sends on
-startup. This section isn't necessary to read for most users.*
+*This section provides documentation on what notifications the module sends on startup. This section isn't necessary to read for most users.*
 
 MMM-pages doesn't activate until we receive the `DOM_OBJECTS_CREATED`
 notification, as that notification ensures all modules have been loaded. On this
