@@ -1,8 +1,5 @@
 Module.register('MMM-pages', {
 
-  // We require the older style of function declaration for compatibility
-  // reasons.
-
   /**
    * By default, we have don't pseudo-paginate any modules. We also exclude
    * the page indicator by default, in case people actually want to use the
@@ -20,12 +17,14 @@ Module.register('MMM-pages', {
     rotationDelay: 10000,
     homePage: 0,
     useLockString: true,
+    pageTimeout: []
   },
+  timer: null,
 
   /**
    * Apply any styles, if we have any.
    */
-  getStyles: function () {
+  getStyles () {
     return ['pages.css'];
   },
 
@@ -33,18 +32,18 @@ Module.register('MMM-pages', {
   /**
    * Modulo that also works with negative numbers.
    *
-   * @param {number} x The dividend
-   * @param {number} n The divisor
+   * @param {number} dividend The dividend
+   * @param {number} divisor The divisor
    */
-  mod: function (x, n) {
-    return ((x % n) + n) % n;
+  mod (dividend, divisor) {
+    return (dividend % divisor + divisor) % divisor;
   },
 
   /**
    * Pseudo-constructor for our module. Makes sure that values aren't negative,
    * and sets the default current page to 0.
    */
-  start: function () {
+  start () {
     // Clamp homePage value to [0, num pages).
     if (this.config.homePage >= this.config.modules.length || this.config.homePage < 0) {
       this.config.homePage = 0;
@@ -91,7 +90,7 @@ Module.register('MMM-pages', {
    * @param {string} notification the notification ID
    * @param {number|string} payload the page to change to/by
    */
-  notificationReceived: function (notification, payload) {
+  notificationReceived (notification, payload) {
     switch (notification) {
       case 'PAGE_CHANGED':
         Log.log(`[MMM-pages] received a notification to change to page ${payload} of type ${typeof payload}.`);
@@ -153,7 +152,7 @@ Module.register('MMM-pages', {
    * @param {number} fallback the fallback value to use. Accepts negative
    * numbers.
    */
-  changePageBy: function (amt, fallback) {
+  changePageBy (amt, fallback) {
     if (typeof amt !== 'number' && typeof fallback === 'undefined') {
       Log.warn(`[MMM-pages] ${amt} is not a number!`);
     }
@@ -175,7 +174,7 @@ Module.register('MMM-pages', {
    * Handles hiding the current page's elements and showing the next page's
    * elements.
    */
-  updatePages: function () {
+  updatePages () {
     // Update if there's at least one page.
     if (this.config.modules.length !== 0) {
       this.animatePageChange();
@@ -194,8 +193,8 @@ Module.register('MMM-pages', {
    * @param {string} [targetPageName] the name of the hiddenPage we want to show.
    * Optional and only used when we want to switch to a hidden page
    */
-  animatePageChange: function (targetPageName) {
-    let lockStringObj = { lockString: this.identifier };
+  animatePageChange (targetPageName) {
+    let lockStringObj = {lockString: this.identifier};
     if (!this.config.useLockString) {
       // Passing in an undefined object is equivalent to not passing it in at
       // all, effectively providing only one arg to the hide and show calls
@@ -216,13 +215,13 @@ Module.register('MMM-pages', {
 
     MM.getModules()
       .exceptWithClass(modulesToShow)
-      .enumerate(module => module.hide(animationTime, lockStringObj));
+      .enumerate((module) => module.hide(animationTime, () => {}, lockStringObj));
 
     // Shows all modules meant to be on the current page, after a small delay.
     setTimeout(() => {
       MM.getModules()
         .withClass(modulesToShow)
-        .enumerate(module => module.show(animationTime, lockStringObj));
+        .enumerate((module) => module.show(animationTime, () => {}, lockStringObj));
     }, animationTime);
   },
 
@@ -231,38 +230,67 @@ Module.register('MMM-pages', {
    *
    * @param {number} delay the delay, in milliseconds.
    */
-  resetTimerWithDelay: function (delay) {
+  resetTimerWithDelay (delay) {
     if (this.config.rotationTime > 0) {
       // This timer is the auto rotate function.
-      clearInterval(this.timer);
+      if (this.timer) {
+        (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
+        this.timer = null;
+      }
       // This is delay timer after manually updating.
-      clearInterval(this.delayTimer);
+      if (this.delayTimer) {
+        clearTimeout(this.delayTimer);
+        this.delayTimer = null;
+      }
+      let rotationTimeout = this.config.rotationTime;
+      if (this.config.pageTimeout.length) {
+        for (let pageInfo of this.config.pageTimeout) {
+          if (pageInfo.pageNumber - 1 == this.curPage) {
+            rotationTimeout = pageInfo.timeout;
+            break;
+          }
+        }
+      }
       const self = this;
-
       this.delayTimer = setTimeout(() => {
-        self.timer = setInterval(() => {
+        self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
           // MagicMirror automatically excludes the sender from receiving the
           // message, so we need to trigger it for ourselves.
           self.sendNotification('PAGE_INCREMENT');
           self.notificationReceived('PAGE_INCREMENT');
-        }, self.config.rotationTime);
-      }, delay);
+        }, rotationTimeout);
+      }, delay, this);
     } else if (this.config.rotationHomePage > 0) {
       // This timer is the auto rotate function.
-      clearInterval(this.timer);
+      if (this.timer) {
+        (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
+        this.timer = null;
+      }
       // This is delay timer after manually updating.
-      clearInterval(this.delayTimer);
+      if (this.delayTimer) {
+        clearTimeout(this.delayTimer);
+        this.delayTimer = null;
+      }
+      let rotationTimeout = this.config.rotationHomePage;
+      if (this.config.pageTimeout.length) {
+        for (let pageInfo of this.config.pageTimeout) {
+          if (pageInfo.pagenumber - 1 == this.curPage) {
+            rotationTimeout = pageInfo.timeout;
+            break;
+          }
+        }
+      }
       const self = this;
-
       this.delayTimer = setTimeout(() => {
-        self.timer = setInterval(() => {
+        this.delayTimer = null;
+        self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
           // MagicMirror automatically excludes the sender from receiving the
           // message, so we need to trigger it for ourselves.
           self.sendNotification('PAGE_CHANGED', 0);
           self.notificationReceived('PAGE_CHANGED', self.config.homePage);
-        }, self.config.rotationHomePage);
+        }, rotationTimeout);
       }, delay);
     }
   },
@@ -275,15 +303,21 @@ Module.register('MMM-pages', {
    *
    * @param {boolean} isRotating the parameter, if you want to pause or resume.
    */
-  setRotation: function (isRotating) {
-    const stateBaseString = (isRotating) ? "resum" : "paus";
+  setRotation (isRotating) {
+    const stateBaseString = isRotating ? 'resum' : 'paus';
     if (isRotating === this.rotationPaused) {
       Log.warn(`[MMM-pages] was asked to ${stateBaseString}e but rotation is already ${stateBaseString}ed!`);
     } else {
       Log.log(`[MMM-pages] ${stateBaseString}ing rotation`);
       if (!isRotating) {
-        clearInterval(this.timer);
-        clearInterval(this.delayTimer);
+        if (this.timer) {
+          this.timer_clear_function(this.timer);
+          this.timer = null;
+        }
+        if (this.delayTimer) {
+          clearTimeout(this.delayTimer);
+          this.delayTimer = null;
+        }
       } else {
         this.resetTimerWithDelay(this.rotationDelay);
       }
@@ -296,7 +330,7 @@ Module.register('MMM-pages', {
    *
    * @param {string} name the name of the hiddenPage we want to show
    */
-  showHiddenPage: function (name) {
+  showHiddenPage (name) {
     // Only proceed if the named hidden page actually exists
     if (name in this.config.hiddenPages) {
       this.animatePageChange(name);
