@@ -57,6 +57,11 @@ To use this module, add it to the modules array in the `config/config.js` file.
 
 *Note*: Some of the module names used in the following example are fictitious.
 
+This approach uses the module names as the page organization technique, as the modulename is added as a CSS class in the MM page content.
+
+Because the modulename is used, this approach does not support multiple instances of the same module with data
+on different pages (like your calendar on page 1, and someone elses on page 2).
+
 ```js
     {
         module: "MMM-pages",
@@ -84,6 +89,66 @@ To use this module, add it to the modules array in the `config/config.js` file.
     },
 ```
 
+an alternative approach, is to define a fixed MMM-pages config
+
+```js
+    {
+        module: "MMM-pages",
+        config: {
+            modules: [
+                ["page1"],
+                ["page2"],
+                ["page3"]
+            ],
+            fixed: ["fixed_page"],
+            hiddenPages: {
+                "screenSaver": ["screensaver_page"],
+                "admin": ["admin_page"]
+            }
+        }
+    },
+```
+
+and then at each module, add a classes: property to indicate the page(s) this module is supposed to appear on
+
+```js
+  {
+    module:"newsfeed",
+    classes:"page1",
+  },
+  {
+    module:"calendar",
+    classes:"page2",
+  },
+  {
+    module:"compliments",
+    classes:"page2",
+  }
+```
+
+etc.
+
+If u want a modules content on multiple pages the classes would list those page names
+
+```js
+  {
+    module:"newsfeed",
+    classes:"page1",
+  },
+  {
+    module:"calendar",  // first calendar instance on page 2
+    classes:"page2",
+  },
+  {
+    module:"calendar",  // second calendar instance on page 3
+    classes:"page3",
+  },
+  {
+    module:"compliments",
+    classes:"page1 page2",  // this module appears on multiple pages
+  }
+```
+
 ### Configuration options
 
 | Option | Type | Default Value | Description |
@@ -99,6 +164,8 @@ To use this module, add it to the modules array in the `config/config.js` file.
 | `rotationFirstPage` | *NA*                       | *NA*                     | **Deprecated**. Use `rotationHomePage` instead. |
 | `homePage`          | `int`                      | `0`                      | Which page index is the home page. If none is set, this returns to the leftmost page instead. |
 | `useLockString`     | `bool`                     | `true`                   | Whether or not to use a lock string to show or hide pages. If disabled, other modules may override when modules may be shown. *Advanced users only. Only override this if you know what you're doing.* |
+| `pageTimeout`       | `[]`                       | `{pageNumber:x,timeout:nnnn}`| array of structures,  enable different timeouts for different pages. |
+|||| `pageNumber` starts at 1 for the first page, timeout is in milliseconds. |
 
 For the `module` configuration option, the first element of the outer array
 should consist of elements that should be on the first page. The second element

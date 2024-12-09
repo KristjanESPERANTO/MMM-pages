@@ -17,7 +17,9 @@ Module.register('MMM-pages', {
     rotationDelay: 10000,
     homePage: 0,
     useLockString: true,
+    pageTimeout: []
   },
+  timer: null,
 
   /**
    * Apply any styles, if we have any.
@@ -212,13 +214,13 @@ Module.register('MMM-pages', {
 
     MM.getModules()
       .exceptWithClass(modulesToShow)
-      .enumerate(module => module.hide(animationTime, lockStringObj));
+      .enumerate(module => module.hide(animationTime, () => {}, lockStringObj));
 
     // Shows all modules meant to be on the current page, after a small delay.
     setTimeout(() => {
       MM.getModules()
         .withClass(modulesToShow)
-        .enumerate(module => module.show(animationTime, lockStringObj));
+        .enumerate(module => module.show(animationTime, () => {}, lockStringObj));
     }, animationTime);
   },
 
@@ -230,35 +232,65 @@ Module.register('MMM-pages', {
   resetTimerWithDelay(delay) {
     if (this.config.rotationTime > 0) {
       // This timer is the auto rotate function.
-      clearInterval(this.timer);
+      if (this.timer) {
+        (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
+        this.timer = null;
+      }
       // This is delay timer after manually updating.
-      clearInterval(this.delayTimer);
+      if (this.delayTimer) {
+        clearTimeout(this.delayTimer);
+        this.delayTimer = null;
+      }
+      let rotationTimeout = this.config.rotationTime;
+      if (this.config.pageTimeout.length) {
+        for (let pageInfo of this.config.pageTimeout) {
+          if ((pageInfo.pageNumber) - 1 == this.curPage) {
+            rotationTimeout = pageInfo.timeout;
+            break;
+          }
+        }
+      }
       const self = this;
 
       this.delayTimer = setTimeout(() => {
-        self.timer = setInterval(() => {
+        self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
           // MagicMirror automatically excludes the sender from receiving the
           // message, so we need to trigger it for ourselves.
           self.sendNotification('PAGE_INCREMENT');
           self.notificationReceived('PAGE_INCREMENT');
-        }, self.config.rotationTime);
-      }, delay);
+        }, rotationTimeout);
+      }, delay, this);
     } else if (this.config.rotationHomePage > 0) {
       // This timer is the auto rotate function.
-      clearInterval(this.timer);
+      if (this.timer) {
+        (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
+        this.timer = null;
+      }
       // This is delay timer after manually updating.
-      clearInterval(this.delayTimer);
+      if (this.delayTimer) {
+        clearTimeout(this.delayTimer);
+        this.delayTimer = null;
+      }
+      let rotationTimeout = this.config.rotationHomePage;
+      if (this.config.pageTimeout.length) {
+        for (let pageInfo of this.config.pageTimeout) {
+          if ((pageInfo.pagenumber) - 1 == this.curPage) {
+            rotationTimeout = pageInfo.timeout;
+            break;
+          }
+        }
+      }
       const self = this;
-
       this.delayTimer = setTimeout(() => {
-        self.timer = setInterval(() => {
+        this.delayTimer = null;
+        self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
           // MagicMirror automatically excludes the sender from receiving the
           // message, so we need to trigger it for ourselves.
           self.sendNotification('PAGE_CHANGED', 0);
           self.notificationReceived('PAGE_CHANGED', self.config.homePage);
-        }, self.config.rotationHomePage);
+        }, rotationTimeout);
       }, delay);
     }
   },
@@ -278,8 +310,14 @@ Module.register('MMM-pages', {
     } else {
       Log.log(`[MMM-pages] ${stateBaseString}ing rotation`);
       if (!isRotating) {
-        clearInterval(this.timer);
-        clearInterval(this.delayTimer);
+        if (this.timer) {
+          this.timer_clear_function(this.timer);
+          this.timer = null;
+        }
+        if (this.delayTimer) {
+          clearTimeout(this.delayTimer);
+          this.delayTimer = null;
+        }
       } else {
         this.resetTimerWithDelay(this.rotationDelay);
       }
