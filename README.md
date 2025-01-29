@@ -41,7 +41,7 @@ cd ~/MagicMirror/modules
 Clone this repository:
 
 ```bash
-git clone https://github.com/sdetweil/MMM-pages
+git clone https://github.com/edward-shen/MMM-pages
 ```
 
 ## Update
@@ -66,11 +66,6 @@ There are two ways to configure this module: Using the module names or using cla
 The easiest way to configure this module is to use the module names to define on which page they should appear:
 
 The first element of the array is the first page, the second element is the second page, and so on.
-
-This approach uses the module names as the page organization technique, as the modulename is added as a CSS class in the MM page content.
-
-Because the modulename is used, this approach does not support multiple instances of the same module with data
-on different pages (like your calendar on page 1, and someone elses on page 2).
 
 ```js
     {
@@ -122,7 +117,6 @@ Instead of using the module name, you can also use a class name for each page. T
         }
     },
 ```
-note:  you can name the page classname  with any name that makes sense for you. Mom, dad, weather, finances, security
 
 You have to add the class name to the config of the module you want to show on a specific page. You can even add more than one class name to show a module instance on multiple pages.
 
@@ -218,7 +212,7 @@ index of 1, and the page to the right of that has an index of 2. Thus, to change
 to the third page, your module should send out:
 
 ```js
-  this.sendNotification("PAGE_CHANGED", 2);
+this.sendNotification("PAGE_CHANGED", 2);
 ```
 
 This module keeps internal track of how many pages you have, defined by your

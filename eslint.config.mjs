@@ -1,4 +1,3 @@
-
 import eslintPluginJs from '@eslint/js';
 import eslintPluginStylistic from '@stylistic/eslint-plugin';
 import globals from 'globals';
@@ -8,7 +7,6 @@ const config = [
   eslintPluginStylistic.configs['recommended-flat'],
   {
     files: ['**/*.js', '**/*.mjs'],
-
   },
   {
     languageOptions: {
