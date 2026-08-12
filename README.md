@@ -1,22 +1,6 @@
 # MMM-pages
 
-## Project status
-
-This project is **mature** and in maintenance mode only. New features or fixes
-will not be actively made. If you'd like to see a feature or fix, please
-create a pull request.
-
-This repo is **not** abandoned. I will still respond to PRs, but support
-requests or bugs reports will not be monitored.
-
-If you'd like to be a maintainer to drive new features forward, please
-contribute to this repository before asking for maintainership. As this module
-is used by a lot of people, I need to ensure that a new maintainer can write
-high quality code and match the standards of the existing codebase.
-
-## Description
-
-This [MagicMirror²][mm] module allows you to have pages in your MagicMirror!
+This module allows you to have pages in your [MagicMirror²][mm]!
 Want to have more modules in your MagicMirror, but want to keep the format?
 Or, want to have grouped modules that are themed together? Look no further!
 
@@ -25,6 +9,13 @@ Or, want to have grouped modules that are themed together? Look no further!
 Note that this module does not provide any method of manually changing the page!
 You should ask other developers to add a notification to their modules, or add
 one yourself!
+
+## Project status
+
+This module is feature-complete and is currently in maintenance mode.
+Bug reports and suggestions for improvements are welcome. New features may
+still be considered when they provide clear value and fit the module's
+overall direction.
 
 ## Page indicator
 
