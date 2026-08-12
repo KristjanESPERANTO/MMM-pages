@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.1](https://github.com/edward-shen/MMM-pages/compare/v1.5.0...v1.5.1) (2026-08-12)
+
+### Fixed
+
+* validate hidden page before state change ([1891426](https://github.com/edward-shen/MMM-pages/commit/189142620e827d267f49dc580cdd1b3397f748ef))
+
+### Documentation
+
+* update "Developer commands" section ([a4e9fbb](https://github.com/edward-shen/MMM-pages/commit/a4e9fbb459efba4c2d5d974ddce78b7eabb54ac4))
+* update "Project status" section ([54e5a7c](https://github.com/edward-shen/MMM-pages/commit/54e5a7c15a381082c36623d928ca42917555a4ff))
+
+### Chores
+
+* add allowScripts config for simple-git-hooks ([60dcb2f](https://github.com/edward-shen/MMM-pages/commit/60dcb2fbb12376902f882d77804156355ae6b206))
+* update devDependencies ([b3dedf3](https://github.com/edward-shen/MMM-pages/commit/b3dedf3ccfab2a197268a85775101bc1c9435111))
+* update Node.js setup action to v7 ([5a979c6](https://github.com/edward-shen/MMM-pages/commit/5a979c685eb2ae640c4544bbe50ebe45eb0ac66d))
 ## [1.5.0](https://github.com/edward-shen/MMM-pages/compare/v1.4.1...v1.5.0) (2026-07-19)
 
 ### Added
