@@ -339,6 +339,28 @@ describe('showHiddenPage()', () => {
     assert.ok(errorLogged);
     global.Log.error = () => {};
   });
+
+  test('notificationReceived does not enter hidden-page mode for invalid page name', () => {
+    const instance = Object.create(MMM_pages);
+    instance.config = {
+      hiddenPages: {
+        admin: ['admin-module']
+      },
+      modules: [['page0']],
+      timings: { default: 0 }
+    };
+    instance.isOnHiddenPage = false;
+    instance.rotationPaused = false;
+    instance.setRotation = (shouldRotate) => {
+      instance.rotationPaused = !shouldRotate;
+    };
+    instance.showHiddenPage = () => {};
+
+    instance.notificationReceived('SHOW_HIDDEN_PAGE', 'missing');
+
+    assert.equal(instance.isOnHiddenPage, false);
+    assert.equal(instance.rotationPaused, false);
+  });
 });
 
 describe('updatePages()', () => {

@@ -186,6 +186,10 @@ Module.register('MMM-pages', {
         break;
       case 'SHOW_HIDDEN_PAGE':
         Log.log(`[MMM-pages] received a notification to change to the hidden page "${payload}" of type "${typeof payload}".`);
+        if (!(payload in this.config.hiddenPages)) {
+          Log.error(`[MMM-pages] Hidden page "${payload}" does not exist!`);
+          break;
+        }
         this.isOnHiddenPage = true;
         this.setRotation(false);
         this.showHiddenPage(payload);
