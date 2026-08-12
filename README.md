@@ -281,9 +281,11 @@ See also FAQ below.
 
 If you want to contribute to this project, pleases use the following commands to maintain code quality:
 
-- `npm install` - Install development dependencies for linting.
+- `npm install` - Install development dependencies for linting and testing.
 - `node --run lint` - Run linting checks.
 - `node --run lint:fix` - Fix linting issues. Please run this before committing.
+- `node --run test` - Run linting checks and unit tests.
+- `node --run test:unit` - Run the unit tests.
 
 ### Demo configurations
 
