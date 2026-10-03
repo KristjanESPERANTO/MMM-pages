@@ -36,7 +36,7 @@ Module.register('MMM-pages', {
     // This timer is the auto rotate function.
     clearInterval(this.timer);
     // This is delay timer after manually updating.
-    clearInterval(this.delayTimer);
+    clearTimeout(this.delayTimer);
     // This is the hidden page timer.
     clearTimeout(this.hiddenPageTimer);
   },
