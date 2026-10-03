@@ -233,6 +233,25 @@ describe('Timer Functionality', () => {
       instance.resetTimerWithDelay(0);
     });
 
+    test('clears a running timer when the current page has no rotation', () => {
+      instance.config.timings = { default: 0, 0: 5000 };
+      instance.config.rotationHomePage = 0;
+      instance.curPage = 1;
+      instance.timer = setInterval(() => {}, 1000);
+      instance.delayTimer = setTimeout(() => {}, 1000);
+
+      let clearTimersCalled = false;
+      const originalClearTimers = instance.clearTimers;
+      instance.clearTimers = function () {
+        clearTimersCalled = true;
+        originalClearTimers.call(this);
+      };
+
+      instance.resetTimerWithDelay(0);
+
+      assert.ok(clearTimersCalled);
+    });
+
     test('does not set timer when all rotation settings are 0', (t, done) => {
       instance.config.timings = { default: 0 }; // Remove admin entry
       instance.config.rotationHomePage = 0;

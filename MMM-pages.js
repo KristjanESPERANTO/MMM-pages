@@ -302,14 +302,15 @@ Module.register('MMM-pages', {
    */
   resetTimerWithDelay(delay) {
     Log.debug(`[MMM-pages] resetTimerWithDelay called with delay: ${delay}ms`);
+    // Always clear, otherwise a timer from the previous page keeps rotating a page without timing.
+    this.clearTimers();
+
     let currentRotationTime = this.config.timings.default;
     if (Object.hasOwn(this.config.timings, this.curPage)) {
       currentRotationTime = this.config.timings[this.curPage];
     }
 
     if (currentRotationTime > 0) {
-      this.clearTimers();
-
       this.delayTimer = setTimeout(() => {
         Log.debug(`[MMM-pages] Starting auto rotation with interval: ${currentRotationTime}ms`);
         this.timer = setInterval(() => {
@@ -327,8 +328,6 @@ Module.register('MMM-pages', {
         : this.config.rotationHomePage;
 
       if (rotationHomePageTimeout > 0) {
-        this.clearTimers();
-
         this.delayTimer = setTimeout(() => {
           this.timer = setInterval(() => {
             // Inform other modules and page change.
