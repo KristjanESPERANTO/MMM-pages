@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.5.2](https://github.com/edward-shen/MMM-pages/compare/v1.5.1...v1.5.2) (2026-10-03)
+
+### Fixed
+
+* stop rotation on pages without timing ([786329a](https://github.com/edward-shen/MMM-pages/commit/786329a0760a0c200c9f3303b069727f2f730890))
+
+### Chores
+
+* update devDependencies ([a24a2e2](https://github.com/edward-shen/MMM-pages/commit/a24a2e24ae7599c45c390ee8ebf04463b6ae0f9a))
+
+### Code Refactoring
+
+* use clearTimeout for delay timer ([25daa11](https://github.com/edward-shen/MMM-pages/commit/25daa11c83a50c4bdd54862d9bb2fa80019d516c))
+
 ## [1.5.1](https://github.com/edward-shen/MMM-pages/compare/v1.5.0...v1.5.1) (2026-08-12)
 
 ### Fixed
